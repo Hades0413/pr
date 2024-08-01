@@ -1,10 +1,15 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 
 # Configura tus variables
-TOKEN = 'tu_token_de_acceso_personal'
-REPO_OWNER = 'tu_usuario_o_organizacion'
-REPO_NAME = 'nombre_del_repositorio'
+TOKEN = os.getenv('GITHUB_TOKEN')
+REPO_OWNER = 'Hades0413'
+REPO_NAME = 'pr'
 BASE_BRANCH = 'main'
 FEATURE_BRANCH = 'feature-branch'
 PR_TITLE = 'Título del Pull Request'
