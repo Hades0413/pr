@@ -195,10 +195,10 @@ def delete_remote_branches_after_pr():
 
 # Ejecutar las funciones en el orden correcto
 print("Iniciando el proceso...")
-check_user_permissions()  # Verificar si el usuario tiene permisos de colaborador
+check_user_permissions()
 delete_local_branches()
 delete_remote_branches()
 create_and_push_branches()
 create_pull_requests()
-delete_files_and_commit()  # Eliminar archivos y hacer commit de eliminación
+delete_files_and_commit()
 delete_remote_branches_after_pr()
