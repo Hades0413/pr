@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import os
 import time
 import json
@@ -203,6 +202,3 @@ create_and_push_branches()
 create_pull_requests()
 delete_files_and_commit()
 delete_remote_branches_after_pr()
-=======
-
->>>>>>> 17dd7e949dffe7c832dbcc3f3c928165b1033d61
