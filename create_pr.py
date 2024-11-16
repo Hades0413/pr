@@ -176,36 +176,17 @@ def delete_files_and_commit(merged_prs):
         # Agregar el cambio (eliminación del archivo)
         run_command(f"git add -A")
         
-        # Commit para eliminar los archivos
-        commit_message = f"Eliminar archivo {file_name}"
-        run_command(f"git commit -m \"{commit_message}\"")
+        # Commit de eliminación de archivos
+        run_command(f"git commit -m \"Eliminar archivo {file_name} después de PR fusionado.\"")
         
-        # Empujar el commit
-        run_command("git push origin main")
+        # Empujar los cambios
+        run_command("git push origin {BASE_BRANCH}")
+        time.sleep(2)
 
-# 6. Eliminar archivos uno por uno en la rama main
-def delete_txt_files_from_main():
-    print("Eliminando archivos .txt de la rama principal...")
-    files = [f for f in os.listdir('.') if f.endswith('.txt')]
-    for file in files:
-        os.remove(file)
-        print(f"Archivo {file} eliminado.")
-        run_command(f"git add {file}")
-        run_command(f"git commit -m \"Eliminar archivo {file}\"")
-    run_command("git push origin main")
-
-# 7. Eliminar ramas locales y remotas que siguen el patrón
-def delete_branches():
-    delete_local_branches()
-    delete_remote_branches()
-
-def main():
-    check_user_permissions()
-    delete_branches()
-    create_and_push_branches()
-    merged_prs = create_pull_requests()
-    delete_files_and_commit(merged_prs)
-    delete_txt_files_from_main()
-
-if __name__ == '__main__':
-    main()
+# Ejecuta las funciones
+check_user_permissions()
+delete_local_branches()
+create_and_push_branches()
+merged_prs = create_pull_requests()
+delete_files_and_commit(merged_prs)
+delete_remote_branches()
