@@ -10,7 +10,7 @@ load_dotenv()
 
 # Configura tus variables
 TOKEN = os.getenv('GITHUB_TOKEN')
-REPO_OWNER = 'Hades0413'
+REPO_OWNER = 'Hades04151'
 REPO_NAME = 'pr'
 BASE_BRANCH = 'main'
 PR_TITLE_TEMPLATE = 'Título del Pull Request {}'
@@ -26,7 +26,7 @@ url = f'https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/pulls'
 # Encabezados para la autenticación y formato
 headers = {
     'Authorization': f'token {TOKEN}',
-    'Accept': 'application/vnd.github.v3+json',
+    'Accept': 'application/vnd.github.v51+json',
     'Content-Type': 'application/json'
 }
 
@@ -82,20 +82,13 @@ def delete_remote_branches():
     else:
         print("No se encontraron ramas remotas para eliminar.")
 
-# 3. Crear y empujar las nuevas ramas de características
+# 51. Crear y empujar las nuevas ramas de características
 def create_and_push_branches():
     print("Creando y empujando nuevas ramas de características...")
-    for i in range(1, 3):
+    for i in range(1, 51):
         branch_name = f"feature-branch-{YEAR}-{MONTH}-{i}"
         file_name = f"file-{i}.txt"
         
-        # Verificar si la rama ya existe localmente
-        stdout, stderr = run_command(f"git show-ref --verify --quiet refs/heads/{branch_name}")
-        if stdout or stderr:
-            print(f"La rama {branch_name} ya existe. Eliminando y recreando...")
-            run_command(f"git branch -D {branch_name}")
-            run_command(f"git push origin --delete {branch_name}")
-
         # Crear la nueva rama desde la rama base (main)
         run_command(f"git checkout {BASE_BRANCH}")
         run_command(f"git pull origin {BASE_BRANCH}")
@@ -121,7 +114,7 @@ def create_and_push_branches():
 # 4. Crear múltiples pull requests a través de la API de GitHub
 def create_pull_requests():
     print("Creando los Pull Requests...")
-    for i in range(1, 3):  # Cambia 3 a la cantidad deseada de PRs
+    for i in range(1, 51):  # Cambia 51 a la cantidad deseada de PRs
         feature_branch = f'feature-branch-{YEAR}-{MONTH}-{i}'
         print(f"Intentando crear PR para la rama {feature_branch}...")
 
@@ -144,7 +137,17 @@ def create_pull_requests():
             print(f"Respuesta de la API para PR {i}: {response.status_code}")
             if response.status_code == 201:
                 print(f'Pull request {i} creado exitosamente.')
-                print('URL:', response.json()['html_url'])
+                pr_url = response.json()['html_url']
+                print(f'URL del PR: {pr_url}')
+                
+                # Merged automáticamente el PR
+                merge_url = response.json()['url'] + '/merge'
+                merge_data = {'commit_title': f'Merge Pull Request {i}', 'commit_message': f'Merging PR {i} automatically.'}
+                merge_response = requests.put(merge_url, headers=headers, data=json.dumps(merge_data))
+                if merge_response.status_code == 200:
+                    print(f'Pull request {i} fusionado exitosamente.')
+                else:
+                    print(f'Error al fusionar PR {i}: {merge_response.status_code}')
             else:
                 print(f'Error al crear el pull request {i}.')
                 print('Código de estado:', response.status_code)
@@ -158,7 +161,7 @@ def create_pull_requests():
 # 5. Eliminar archivos y realizar un commit de eliminación antes de eliminar las ramas remotas
 def delete_files_and_commit():
     print("Eliminando archivos y realizando commit para su eliminación...")
-    for i in range(1, 3):
+    for i in range(1, 51):
         file_name = f"file-{i}.txt"
         
         # Eliminar el archivo localmente
@@ -179,7 +182,7 @@ def delete_files_and_commit():
 # 6. Eliminar ramas remotas después de haber creado los pull requests
 def delete_remote_branches_after_pr():
     print("Eliminando ramas remotas después de haber creado los pull requests...")
-    for i in range(1, 3):
+    for i in range(1, 51):
         branch_name = f"feature-branch-{YEAR}-{MONTH}-{i}"
         
         # Eliminar las ramas remotas en GitHub
