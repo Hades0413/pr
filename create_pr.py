@@ -185,33 +185,27 @@ def delete_files_and_commit(merged_prs):
 
 # 6. Eliminar archivos uno por uno en la rama main
 def delete_txt_files_from_main():
-    print("Eliminando archivos .txt uno por uno en la rama main...")
-    files = [f for f in os.listdir() if f.endswith('.txt')]
-    
+    print("Eliminando archivos .txt de la rama principal...")
+    files = [f for f in os.listdir('.') if f.endswith('.txt')]
     for file in files:
-        print(f"Eliminando el archivo {file} en la rama main...")
         os.remove(file)
+        print(f"Archivo {file} eliminado.")
         run_command(f"git add {file}")
-        run_command(f"git commit -m \"Eliminar archivo {file} de la rama main\"")
-        run_command("git push origin main")
-        print(f"Archivo {file} eliminado y cambios empujados a la rama main.")
+        run_command(f"git commit -m \"Eliminar archivo {file}\"")
+    run_command("git push origin main")
 
-# 7. Eliminar ramas remotas después de haber creado los pull requests
-def delete_remote_branches_after_pr():
-    print("Eliminando ramas remotas después de haber creado los pull requests...")
-    for i in range(1, 3):
-        branch_name = f"feature-branch-{YEAR}-{MONTH}-{i}"
-        
-        # Eliminar las ramas remotas en GitHub
-        print(f"Eliminando la rama remota {branch_name}...")
-        run_command(f"git push origin --delete {branch_name}")
+# 7. Eliminar ramas locales y remotas que siguen el patrón
+def delete_branches():
+    delete_local_branches()
+    delete_remote_branches()
 
-# Ejecutar las funciones
-check_user_permissions()
-delete_local_branches()
-delete_remote_branches()
-create_and_push_branches()
-merged_prs = create_pull_requests()
-delete_files_and_commit(merged_prs)
-delete_txt_files_from_main()
-delete_remote_branches_after_pr()
+def main():
+    check_user_permissions()
+    delete_branches()
+    create_and_push_branches()
+    merged_prs = create_pull_requests()
+    delete_files_and_commit(merged_prs)
+    delete_txt_files_from_main()
+
+if __name__ == '__main__':
+    main()
