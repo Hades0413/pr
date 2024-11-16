@@ -183,7 +183,20 @@ def delete_files_and_commit(merged_prs):
         # Empujar el commit
         run_command("git push origin main")
 
-# 6. Eliminar ramas remotas después de haber creado los pull requests
+# 6. Eliminar archivos uno por uno en la rama main
+def delete_txt_files_from_main():
+    print("Eliminando archivos .txt uno por uno en la rama main...")
+    files = [f for f in os.listdir() if f.endswith('.txt')]
+    
+    for file in files:
+        print(f"Eliminando el archivo {file} en la rama main...")
+        os.remove(file)
+        run_command(f"git add {file}")
+        run_command(f"git commit -m \"Eliminar archivo {file} de la rama main\"")
+        run_command("git push origin main")
+        print(f"Archivo {file} eliminado y cambios empujados a la rama main.")
+
+# 7. Eliminar ramas remotas después de haber creado los pull requests
 def delete_remote_branches_after_pr():
     print("Eliminando ramas remotas después de haber creado los pull requests...")
     for i in range(1, 3):
@@ -192,24 +205,13 @@ def delete_remote_branches_after_pr():
         # Eliminar las ramas remotas en GitHub
         print(f"Eliminando la rama remota {branch_name}...")
         run_command(f"git push origin --delete {branch_name}")
-        
-        # Verificación de eliminación
-        stdout, stderr = run_command(f"git branch -r | findstr 'origin/{branch_name}'")
-        if stderr:
-            print(f"Error al verificar eliminación de la rama remota {branch_name}.")
-        else:
-            print(f"Rama remota {branch_name} eliminada exitosamente.")
 
-# Función principal que integra todos los pasos
-def main():
-    check_user_permissions()
-    delete_local_branches()
-    delete_remote_branches()
-    create_and_push_branches()
-    merged_prs = create_pull_requests()
-    delete_files_and_commit(merged_prs)
-    delete_remote_branches_after_pr()
-
-# Ejecutar el script principal
-if __name__ == "__main__":
-    main()
+# Ejecutar las funciones
+check_user_permissions()
+delete_local_branches()
+delete_remote_branches()
+create_and_push_branches()
+merged_prs = create_pull_requests()
+delete_files_and_commit(merged_prs)
+delete_txt_files_from_main()
+delete_remote_branches_after_pr()
